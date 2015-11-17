@@ -833,11 +833,12 @@ static void start_threads(void)
     BUSY_THREADS(i) = 0;
     RQST_COUNT(i) = 0;
     for (n = 0; n < max_wait_threads; n++) {
-      if (st_thread_create(handle_connections, (void *)i, 0, 0) != NULL)
-	WAIT_THREADS(i)++;
-      else
-	err_sys_report(errfd, "ERROR: process %d (pid %d): can't create"
-		       " thread", my_index, my_pid);
+      if (st_thread_create(handle_connections, (void *)i, 0, 0) != NULL) {
+        WAIT_THREADS(i)++;
+      } else {
+        err_sys_report(errfd, "ERROR: process %d (pid %d): can't create"
+            " thread", my_index, my_pid);
+      }
     }
     if (WAIT_THREADS(i) == 0)
       exit(1);
@@ -871,11 +872,12 @@ static void *handle_connections(void *arg)
     BUSY_THREADS(i)++;
     if (WAIT_THREADS(i) < min_wait_threads && TOTAL_THREADS(i) < max_threads) {
       /* Create another spare thread */
-      if (st_thread_create(handle_connections, (void *)i, 0, 0) != NULL)
-	WAIT_THREADS(i)++;
-      else
-	err_sys_report(errfd, "ERROR: process %d (pid %d): can't create"
-		       " thread", my_index, my_pid);
+      if (st_thread_create(handle_connections, (void *)i, 0, 0) != NULL) {
+        WAIT_THREADS(i)++;
+      } else {
+        err_sys_report(errfd, "ERROR: process %d (pid %d): can't create"
+            " thread", my_index, my_pid);
+      }
     }
 
     handle_session(i, cli_nfd);

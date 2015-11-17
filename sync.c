@@ -125,8 +125,9 @@ int st_usleep(st_utime_t usecs)
   if (usecs != ST_UTIME_NO_TIMEOUT) {
     me->state = _ST_ST_SLEEPING;
     _ST_ADD_SLEEPQ(me, usecs);
-  } else
+  } else {
     me->state = _ST_ST_SUSPENDED;
+  }
 
   _ST_SWITCH_CONTEXT(me);
 
