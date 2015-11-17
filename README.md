@@ -1,5 +1,2 @@
-state-threads
-=============
-
-fork from http://sourceforge.net/projects/state-threads, nothing changed.<br/>
-see: https://github.com/winlinvip/state-threads/blob/master/README
+# httpserver
+http server toy based on [state-threads](http://sourceforge.net/projects/state-threads)
