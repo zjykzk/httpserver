@@ -408,18 +408,18 @@ int st_connect(_st_netfd_t *fd, const struct sockaddr *addr, int addrlen,
        * ("Interrupted connect").
        */
       if (errno != EINPROGRESS && (errno != EADDRINUSE || err == 0))
-	return -1;
+        return -1;
       /* Wait until the socket becomes writable */
       if (st_netfd_poll(fd, POLLOUT, timeout) < 0)
-	return -1;
+        return -1;
       /* Try to find out whether the connection setup succeeded or failed */
       n = sizeof(int);
       if (getsockopt(fd->osfd, SOL_SOCKET, SO_ERROR, (char *)&err,
-		     (socklen_t *)&n) < 0)
-	return -1;
+            (socklen_t *)&n) < 0)
+        return -1;
       if (err) {
-	errno = err;
-	return -1;
+        errno = err;
+        return -1;
       }
       break;
     }
@@ -488,29 +488,33 @@ int st_readv_resid(_st_netfd_t *fd, struct iovec **iov, int *iov_size,
   ssize_t n;
 
   while (*iov_size > 0) {
-    if (*iov_size == 1)
+    if (*iov_size == 1) {
       n = read(fd->osfd, (*iov)->iov_base, (*iov)->iov_len);
-    else
+    } else {
       n = readv(fd->osfd, *iov, *iov_size);
+    }
+
     if (n < 0) {
-      if (errno == EINTR)
-	continue;
-      if (!_IO_NOT_READY_ERROR)
-	return -1;
-    } else if (n == 0)
+      if (errno == EINTR) {
+        continue;
+      }
+      if (!_IO_NOT_READY_ERROR) {
+        return -1;
+      }
+    } else if (n == 0) {
       break;
-    else {
+    } else {
       while ((size_t) n >= (*iov)->iov_len) {
-	n -= (*iov)->iov_len;
-	(*iov)->iov_base = (char *) (*iov)->iov_base + (*iov)->iov_len;
-	(*iov)->iov_len = 0;
-	(*iov)++;
-	(*iov_size)--;
-	if (n == 0)
-	  break;
+        n -= (*iov)->iov_len;
+        (*iov)->iov_base = (char *) (*iov)->iov_base + (*iov)->iov_len;
+        (*iov)->iov_len = 0;
+        (*iov)++;
+        (*iov_size)--;
+        if (n == 0)
+          break;
       }
       if (*iov_size == 0)
-	break;
+        break;
       (*iov)->iov_base = (char *) (*iov)->iov_base + n;
       (*iov)->iov_len -= n;
     }
